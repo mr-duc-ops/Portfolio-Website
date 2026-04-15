@@ -3,14 +3,10 @@ import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import { GridItem } from '../components/grid-item'
 
-import thumbPortfolio from '../public/images/contents/youtube-how-to-build-portfolio.jpg'
-import thumbHowToUseInkdrop from '../public/images/contents/youtube-how-to-use-inkdrop.jpg'
-import thumbFishWorkflow from '../public/images/contents/youtube-fish-workflow.jpg'
-import thumbMyDeskSetup from '../public/images/contents/youtube-my-desk-setup.jpg'
-import thumb500PaidUsers from '../public/images/contents/blog-500-paid-users.jpg'
-import thumbFinancialGoal from '../public/images/contents/blog-financial-goal.png'
-import thumbHowToPriceYourself from '../public/images/contents/blog-how-to-price-yourself.jpg'
-import thumb50xFaster from '../public/images/contents/youtube-50x-faster.jpg'
+import thumb41ViewModel from '../public/images/contents/viewmodel41.jpg'
+import thumb41ViewModelDiagram from '../public/images/contents/viewmodel_41_diagram.png'
+import thumbADR from '../public/images/contents/ADRs.png'
+import thumbRFC from '../public/images/contents/RFCs.jpg'
 
 const Posts = () => (
   <Layout title="Posts">
@@ -22,24 +18,14 @@ const Posts = () => (
       <Section delay={0.1}>
         <SimpleGrid columns={[1, 2, 2]} gap={6}>
           <GridItem
-            title="How to build a portfolio website"
-            thumbnail={thumbPortfolio}
-            href="https://www.youtube.com/watch?v=bSMZgXzC9AA"
+            title="4+1 View Model"
+            thumbnail={thumb41ViewModel}
+            href="https://docs.google.com/document/d/1M2rGJ8NZNVBC_gUQsPOhWFyzeAI7mjtm8YwmsKhBGpQ/edit?pli=1&tab=t.0"
           />
           <GridItem
-            title="How to take notes in Markdown efficiently with Inkdrop"
-            thumbnail={thumbHowToUseInkdrop}
-            href="https://www.youtube.com/watch?v=-qBavwqc_mY"
-          />
-          <GridItem
-            title="My Fish workflow"
-            thumbnail={thumbFishWorkflow}
-            href="https://www.youtube.com/watch?v=KKxhf50FIPI"
-          />
-          <GridItem
-            title="My desk setup (Late 2020)"
-            thumbnail={thumbMyDeskSetup}
-            href="https://www.youtube.com/watch?v=1OFDMwDlnOE"
+            title="4+1 View Model Diagram"
+            thumbnail={thumb41ViewModelDiagram}
+            href="https://app.diagrams.net/#G1AAlXmt3FFN_swo7wdeb_vIAClN8IADNx#%7B%22pageId%22%3A%22duIAM8N-wbyZ1FDbEobV%22%7D"
           />
         </SimpleGrid>
       </Section>
@@ -47,29 +33,14 @@ const Posts = () => (
       <Section delay={0.3}>
         <SimpleGrid columns={[1, 2, 2]} gap={6}>
           <GridItem
-            title="How I’ve Attracted The First 500 Paid Users For My SaaS That Costs $5/mo"
-            thumbnail={thumb500PaidUsers}
-            href="https://blog.inkdrop.app/how-ive-attracted-the-first-500-paid-users-for-my-saas-that-costs-5-mo-7a5b94b8e820"
+            title="ADR – Architecture Decision Record"
+            thumbnail={thumbADR}
+            href="https://docs.google.com/document/d/1M2rGJ8NZNVBC_gUQsPOhWFyzeAI7mjtm8YwmsKhBGpQ/edit?pli=1&tab=t.qpqtw8lw94vc"
           />
           <GridItem
-            title="I stopped setting a financial goal for my SaaS"
-            thumbnail={thumbFinancialGoal}
-            href="https://blog.inkdrop.app/i-stopped-setting-a-financial-goal-for-my-saas-a92c3db65506"
-          />
-        </SimpleGrid>
-      </Section>
-
-      <Section delay={0.5}>
-        <SimpleGrid columns={[1, 2, 2]} gap={6}>
-          <GridItem
-            title="How to Price Yourself as a Freelance Developer"
-            thumbnail={thumbHowToPriceYourself}
-            href="https://blog.inkdrop.app/how-to-price-yourself-as-a-freelance-developer-3453dfd59d91"
-          />
-          <GridItem
-            title="I made my React Native app 50x faster"
-            thumbnail={thumb50xFaster}
-            href="https://www.youtube.com/watch?v=vj723NlrIQc"
+            title="RFC – Request for Comments"
+            thumbnail={thumbRFC}
+            href="https://docs.google.com/document/d/1M2rGJ8NZNVBC_gUQsPOhWFyzeAI7mjtm8YwmsKhBGpQ/edit?pli=1&tab=t.2zkosajz4zk"
           />
         </SimpleGrid>
       </Section>
