@@ -1,0 +1,248 @@
+---
+title: 4+1 View Model
+description: How to reduce stakeholder misalignment in real systems?
+date: 2026-04-17
+type: Technical Blog
+externalUrl: "/images/posts/view-model-4-plus-1/4-1-plus-view-model-pdf.pdf"
+author:
+  name: "Huỳnh Đức"
+  avatar: "/images/Duc.jpg"
+signatures:
+  name: "Mr. Đức"
+  contacts:
+    - "duch9707@gmail.com"
+    - "http://linkedin.com/in/mr-duc"
+---
+
+<center><strong><a href="https://www.researchgate.net/publication/220018231_The_41_View_Model_of_Architecture">4+1 VIEW MODEL (Philippe Kruchten - 1995)</a></strong></center>
+
+[![4+1 View Model Diagram][image1]](https://app.diagrams.net/?src=about#G1AAlXmt3FFN_swo7wdeb_vIAClN8IADNx#%7B%22pageId%22%3A%22duIAM8N-wbyZ1FDbEobV%22%7D)
+
+
+## 1. Bản chất vấn đề: “Misalignment giữa các Stakeholder”
+
+**Misalignment** là tình trạng các bên liên quan hiểu sai ý nhau, dẫn đến quyết định sai lầm và tích tụ **Technical Debt** (Nợ kỹ thuật).
+
+Một hệ thống thực tế thường chứa rất nhiều tầng thông tin cùng lúc: Business flow, User journey, Module/function, API interaction, Database schema, Infrastructure/deployment topology, Security boundary, Scaling & performance strategy, Team ownership, Runtime observability, Data flow, Failure handling & recovery path…
+
+Nếu cố gắng nhồi nhét tất cả vào **một diagram duy nhất**, chúng ta sẽ rơi vào tình trạng **Misalignment**.
+
+### Sự lệch pha đến từ đâu?
+
+Mỗi nhóm stakeholder có mối quan tâm (**concerns**) hoàn toàn khác nhau:
+
+- **Product Owner / Business Stakeholder**: Quan tâm đến **giá trị kinh doanh** và các chức năng mang lại lợi ích cho người dùng cuối.
+- **Developer**: Quan tâm đến **Maintainability** (dễ bảo trì), **Testability** (dễ kiểm thử) và **Tốc độ phát triển**.
+- **Operations / DevOps / Infrastructure team**: Quan tâm đến **Runtime stability**, **Cost**, **Scalability** và **Resilience**.
+- **Architect**: Phải đảm bảo **tính nhất quán tổng thể** (consistency) và **khả năng phát triển dài hạn** (evolvability).
+
+## 2. Vấn đề khi thiếu 4+1 View Model
+
+### a. Over-simplification (Quá đơn giản)
+
+- Lược bỏ quá nhiều chi tiết (ví dụ: *User → Frontend → Backend → DB*).
+- Sơ đồ nhìn sạch sẽ nhưng thiếu rất nhiều thông tin quan trọng:
+  - Auth & authorization chạy ở đâu?
+  - Rate limiting, caching, queue xử lý bất đồng bộ ở đâu?
+  - **Data protection strategy** (backup, replication, restore drills) & **Disaster Recovery** (**RPO** / **RTO**)?
+  - External services tích hợp ra sao?
+  - Scaling strategy (**horizontal** hay **vertical**)?
+  - Phân quyền nội bộ giữa các service?
+  - Retry / failure flow khi service crash?
+
+**Hậu quả**: Người xem tưởng đã hiểu nhưng thực ra hiểu sai. Ops không chuẩn bị cho High Availability, Security bỏ sót lỗ hổng, Dev không biết phải gọi service nào. Diagram đẹp nhưng vô dụng cho quyết định thực tế.
+
+### b. Over-documentation (Quá phức tạp)
+
+- Nhét mọi thứ vào một sơ đồ: 45 services, 120 arrows, auth flow, cron jobs, queues, DB tables, cloud resources, failover path, API gateway rules, network subnet, logging flow…
+
+**Hậu quả**: Sơ đồ trở thành "**mì spaghetti**" (rối rắm, không ai muốn đọc, không ai duy trì được). Thường bị né vội.
+
+### Root Cause (Nguyên nhân gốc rễ)
+
+Người ta nghĩ “**một sơ đồ tổng thể = đủ mọi nhu cầu**”.  
+Nhưng thực tế: **Một góc nhìn không thể phục vụ tất cả stakeholders**.
+
+**⇒ 4+1 View Model** chính là giải pháp để khắc phục misalignment này.
+
+## 3. Hiểu đơn giản về 4+1 View Model
+
+4+1 View Model cung cấp **5 góc nhìn đồng thời**, mỗi góc nhìn tập trung vào một nhóm concerns riêng biệt, giúp truyền tải thông tin chính xác, hiệu quả và phù hợp với từng đối tượng.
+
+*(Một stakeholder thường cần nhiều views, và một view thường phục vụ nhiều stakeholders).*
+
+### Logical View (Góc nhìn Logic)
+
+- **Bản chất**: Tập trung vào **hành vi chức năng** từ góc độ Business Domain. Trả lời: *"Hệ thống làm gì và tại sao?"*. Sử dụng Ubiquitous Language.
+- **Thành phần**: Bounded Context, Aggregates, Entities, Value Objects, Domain Services, Domain Events, Business rules, invariants, relationships…
+- **Áp dụng thực tế**: Định hình các Context, tách biệt business logic khỏi technical details. Giúp họp với Product Team và tránh Requirement sai lệch.
+- **Sơ đồ thường dùng**: Class Diagram, Component Diagram, Domain Model Diagram.
+- **Đối tượng hướng đến**: Product Owners, Business Analysts, Khách hàng (End-User / Functionality).
+- **Tại sao họ cần**: Họ không quan tâm công nghệ (Java hay Golang, MySQL hay MongoDB), mà cần biết tính năng hoạt động ra sao và logic kinh doanh có đúng không.
+
+### Process View (Góc nhìn Tiến trình)
+
+- **Bản chất**: Tập trung vào **hành vi runtime** và tương tác động. Trả lời: *"Hệ thống hoạt động thế nào dưới tải thực tế?"*. Giải quyết Non-functional requirements (latency, throughput…).
+- **Thành phần**: Concurrency, message queues, rate limiting, circuit breakers, failover, load balancing, failure handling…
+- **Áp dụng thực tế**: Thiết kế queue cho job AI nặng, cơ chế failover, đảm bảo zero-downtime.
+- **Sơ đồ thường dùng**: Sequence Diagram, Activity Diagram, State Machine Diagram.
+- **Đối tượng hướng đến**: System Integrators, Developers, DevOps (Integrators / Performance / Scalability).
+- **Tại sao họ cần**: Quan tâm đến hiệu năng và ổn định khi có tải cao, luồng dữ liệu qua queue nào, v.v.
+
+### Development View (Góc nhìn Phát triển)
+
+- **Bản chất**: Tập trung vào cấu trúc code và tổ chức làm việc cho đội ngũ. Trả lời: *"Codebase nên được tổ chức như thế nào để đội ngũ làm việc hiệu quả và lâu dài?"*.
+- **Thành phần**: Package hierarchy, module boundaries, layering, dependency management, coding standards.
+- **Áp dụng thực tế**: Ép buộc quy tắc tầng (Domain Layer không biết Infrastructure Layer), giúp thay đổi công nghệ dễ dàng (Google Storage → AWS S3).
+- **Sơ đồ thường dùng**: Package Diagram, Layered Architecture Diagram, Module Dependency Graph.
+- **Đối tượng hướng đến**: Software Developers và Software Architects.
+- **Tại sao họ cần**: Biết code nên viết ở folder nào, module A có được gọi trực tiếp module B không.
+
+### Physical View (Góc nhìn Vật lý / Triển khai)
+
+- **Bản chất**: Tập trung vào cách phần mềm được ánh xạ lên hạ tầng thực tế (cloud hoặc on-premise). Trả lời: *"Hệ thống sẽ chạy trên những tài nguyên nào?"*.
+- **Thành phần**: Containers, networks, storage, high-availability, deployment topology, disaster recovery.
+- **Áp dụng thực tế**: Chỉ rõ Docker containers chạy trên Cloud, cấu hình Load Balancer cho multi-zone, Disaster Recovery.
+- **Sơ đồ thường dùng**: Deployment Diagram, Network Topology Diagram, Infrastructure Diagram.
+- **Đối tượng hướng đến**: DevOps Engineers, SRE, Infrastructure Architects.
+- **Tại sao họ cần**: Biết cần bao nhiêu server, firewall đặt ở đâu, dữ liệu backup sang region nào…
+
+### Scenarios (The +1 – Góc nhìn Tổng hợp)
+
+- **Bản chất**: Không phải view riêng biệt mà là công cụ **kiểm tra tính nhất quán** giữa 4 view còn lại. Dùng các Use Case quan trọng để validate.
+- **Thành phần**: Critical user journeys và business flows.
+- **Áp dụng thực tế**: Chọn scenario quan trọng (tạo order cho hàng trăm user cùng lúc, xử lý payment dưới tải cao) để kiểm tra xuyên suốt 4 view.
+- **Sơ đồ thường dùng**: Use Case Diagram + detailed flow descriptions.
+- **Đối tượng hướng đến**: Tất cả các bên (All Stakeholders).
+- **Tại sao họ cần**: Đây là “điểm chạm” chung – Business thấy tính năng, Dev thấy luồng code, Ops thấy luồng vận hành thực tế.
+
+## Tóm lại – Lý do tôi chọn và kiên trì sử dụng 4+1 View Model
+
+- Buộc tư duy đa chiều, tránh misalignment giữa các stakeholder – nguyên nhân chính gây Technical Debt.
+- Giúp hiểu rõ bức tranh toàn cảnh hệ thống từ kinh doanh → logic → runtime → code → hạ tầng.
+- Làm rõ và kiểm soát hệ thống có hệ thống, giảm rủi ro khi scale, phát hiện sớm xung đột giữa các view.
+- Áp dụng nguyên tắc **KISS** một cách thực tế và hiệu quả, tránh over-engineering hoặc over-simplification.
+
+## Kiến thức chi tiết để thiết kế mô hình 4+1
+
+### Logical View
+![Logical View 1][image2]  
+![Logical View 2][image3]
+
+**Components & Connectors**:
+- Class/Entity/Domain Object, Utility Class, Parameterized Class, Class Category.
+- Association, Aggregation, Usage, Inheritance, Instantiation.
+
+**Ví dụ E-commerce đơn giản**:
+- User ——— Order
+- Order ●—— OrderItem
+- Order ○—— PaymentService
+- PaymentService - - → PaymentRequest
+- AdminUser ——▶ User
+
+### Process View
+![Process View 1][image4]  
+![Process View 2][image5]
+
+**Components & Connectors**:
+- Process, Simplified Process, Periodic Process.
+- Message, RPC, Bidirectional Message, Event Broadcast.
+
+**Ví dụ E-commerce runtime**:
+- User App ↔ API Gateway
+- API Gateway ⇒ Auth Service, Order Service
+- Order Service ⇒ Payment Service
+- Order Service - - → OrderCreated Event → Inventory Worker, Email Worker
+- Report Job (Periodic) ⇒ Analytics DB
+
+### Development View
+![Development View 1][image6]  
+![Development View 2][image7]
+
+**Components & Connectors**:
+- Module, Subsystem, Layer.
+- Reference / Compilation Dependency.
+
+**Ví dụ E-commerce codebase** (Layered Architecture):
+- **Presentation Layer**: API Module → Auth Module, Order Module
+- **Application Layer**: Order Module → Payment Module, Inventory Module
+- **Domain Layer**: User, Order, Product Module
+- **Infrastructure Layer**: Database, Cache, Queue Module
+- **Commerce Subsystem**: Cart, Order, Payment Module
+
+### Physical View
+**Ảnh 4:** Physical View  
+![Physical View 1][image8]  
+![Physical View 2][image9]
+
+**Components & Connectors**:
+- Processor, Other Device.
+- Communication Line, Non-permanent Communication, Uni-directional, High Bandwidth.
+
+**Ví dụ E-commerce deployment**:
+- User Browser → Load Balancer → Web Server 1/2 → App Server → Database Server, Redis Cache, SFTP Backup
+
+### Scenario / Use Case View
+![Scenario View][image10]
+
+**Components**:
+- Scenario/Use Case, Actor, Precondition, Postcondition, Trigger.
+- Normal Flow, Alternative Flow, Exception Flow.
+
+**Ví dụ: Place Order**
+- **Scenario**: Place Order
+- **Actor**: Customer
+- **Trigger**: Customer clicks Checkout
+- **Precondition**: Customer logged in, Cart has items
+- **Normal Flow**:
+  1. Customer confirms order
+  2. System creates Order
+  3. System requests Payment Gateway
+  4. Payment success
+  5. System confirms order
+- **Alternative Flow**: Customer selects COD → Skip online payment
+- **Exception Flow**: Payment failed → Order marked Pending Payment
+- **Postcondition**: Order saved, Inventory reserved, Notification sent
+
+## Ví dụ thực tế trước khi áp dụng 4+1 View Model
+
+![Old Single Diagram][image11]
+
+**Bài toán**: Xây dựng nền tảng **multi-tenant** phục vụ nhiều Province/School/Admin, có khả năng scale, tùy biến và vận hành ổn định dài hạn.
+
+Sơ đồ cũ đã giải quyết được nhiều vấn đề thực tế (scale, separation of concerns, monitoring, SaaS multi-tenant…). Tuy nhiên, **vấn đề lớn nhất** là:
+
+- Tất cả concerns (Business, Runtime, Deployment, Code structure) nằm chung **một sơ đồ**.
+- Stakeholder khác nhau nhìn cùng một hình nhưng hiểu khác nhau → Dễ misalignment khi team lớn.
+- Khó review trade-off giữa các view.
+- Team không hiểu đúng bức tranh toàn cảnh → Dễ sinh bug.
+
+**Nếu làm lại bằng 4+1 View Model**, hệ thống sẽ được tách rõ ràng:
+- **Scenario View**: Province/School/Admin cần gì
+- **Logical View**: Tenant, Billing, User, Notification module
+- **Development View**: Repo, package, team ownership
+- **Process View**: Queue, cache, scheduler, scaling
+- **Physical View**: Load balancer, servers, DB, storage
+
+<div align="center">
+
+**Okay, Take Away Now!!**
+
+👏 *“Kinh nghiệm giúp ta giải bài toán hôm nay.”*  
+👏 *“Framework tốt giúp ta giải bài toán đó lặp lại tốt hơn trong tương lai.”*
+
+</div>
+
+---
+
+[image1]: /images/posts/view-model-4-plus-1/image-1.png
+[image2]: /images/posts/view-model-4-plus-1/image-2.png
+[image3]: /images/posts/view-model-4-plus-1/image-3.png
+[image4]: /images/posts/view-model-4-plus-1/image-4.png
+[image5]: /images/posts/view-model-4-plus-1/image-5.png
+[image6]: /images/posts/view-model-4-plus-1/image-6.png
+[image7]: /images/posts/view-model-4-plus-1/image-7.png
+[image8]: /images/posts/view-model-4-plus-1/image-8.png
+[image9]: /images/posts/view-model-4-plus-1/image-9.png
+[image10]: /images/posts/view-model-4-plus-1/image-10.png
+[image11]: /images/posts/view-model-4-plus-1/image-11.jpg

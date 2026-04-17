@@ -4,6 +4,8 @@ import NavBar from '../navbar'
 import { Box, Container } from '@chakra-ui/react'
 import Footer from '../footer'
 import VoxelDogLoader from '../voxel-dog-loader'
+import ScrollToTop from '../scroll-to-top'
+import CustomCursor from '../custom-cursor'
 
 const LazyVoxelDog = dynamic(() => import('../voxel-dog'), {
   ssr: false,
@@ -33,6 +35,7 @@ const Main = ({ children, router }) => {
       </Head>
 
       <NavBar path={router.asPath} />
+      <CustomCursor />
 
       <Container maxW="container.md" pt={14}>
         <LazyVoxelDog />
@@ -41,6 +44,7 @@ const Main = ({ children, router }) => {
 
         <Footer />
       </Container>
+      <ScrollToTop />
     </Box>
   )
 }
