@@ -1,0 +1,263 @@
+---
+title: ADR Template Guidance
+description: Bạn đã suy nghĩ đúng trước khi quyết định chưa?
+date: 2026-04-17
+type: Technical Document
+externalUrl: https://docs.google.com/document/d/1M2rGJ8NZNVBC_gUQsPOhWFyzeAI7mjtm8YwmsKhBGpQ/edit?pli=1&tab=t.qpqtw8lw94vc
+author:
+  name: "Huỳnh Đức"
+  avatar: "/images/Duc.jpg"
+signatures:
+  name: "Mr. Đức"
+  contacts:
+    - "duch9707@gmail.com"
+    - "http://linkedin.com/in/mr-duc"
+---
+
+# Architecture Decision Record (ADR)
+
+> Tham khảo thêm: [Link GitHub ADR](https://github.com/joelparkerhenderson/architecture-decision-record)
+
+Architecture Decision Record (ADR) dùng để ghi lại **quyết định kiến trúc quan trọng**, lý do ra quyết định, các phương án đã cân nhắc, trade-offs (đánh đổi), tác động và thời điểm cần xem xét lại.
+
+### Mục tiêu
+- Giúp team hiểu **vì sao quyết định được đưa ra**.
+- Tránh tranh luận lặp lại.
+- Giảm **technical debt** (nợ kỹ thuật) vô thức.
+- Hỗ trợ **onboarding** (người mới vào team).
+- Tăng **governance / traceability** (khả năng kiểm soát & truy vết quyết định).
+
+### Template này phù hợp cho
+- **Engineer / Junior**: Học cách tư duy ra quyết định có cấu trúc.
+- **Senior Engineer / Tech Lead**: Ghi lại và truyền đạt các quyết định kỹ thuật quan trọng.
+- **Architecture / Engineering Manager**: Alignment stakeholder và governance ở quy mô lớn.
+
+---
+
+## I. Cách sử dụng template này
+
+### 1. Khi nào nên viết ADR?
+Viết ADR khi quyết định có ảnh hưởng đáng kể như:
+- Chọn kiến trúc Monolith / Microservices.
+- Chọn Database (PostgreSQL / MongoDB).
+- Chọn multi-tenant strategy (chiến lược nhiều khách hàng dùng chung hệ thống).
+- Chọn Auth model (mô hình xác thực).
+- Chọn Event-driven vs Sync API.
+- Chọn Cloud provider.
+- Quyết định có **chi phí đảo ngược cao**.
+
+### 2. Khi nào không cần ADR?
+Không cần ADR cho thay đổi nhỏ:
+- Đổi tên field, chỉnh màu button.
+- Sửa bug nhỏ.
+- Refactor nội bộ không ảnh hưởng design.
+
+> **Quy tắc vàng:** Quyết định càng khó đảo ngược, càng nên có ADR.
+
+---
+
+## II. Chi tiết Biểu mẫu ADR
+
+### ADR-00X: [Tên quyết định ngắn gọn, rõ ràng, dùng động từ]
+
+**Cách đặt tên tốt (Động từ + Đối tượng):**
+- *Adopt PostgreSQL as Primary Database*
+- *Use Modular Monolith for Phase 1*
+- *Standardized Event Bus with Kafka*
+
+**Tên kém chất lượng:**
+- *Database Decision*
+- *Architecture Change*
+
+---
+
+### Metadata
+
+| Field                  | Value / Description                                                                 |
+|------------------------|-------------------------------------------------------------------------------------|
+| **Status**             | `Proposed` \| `Accepted` \| `Rejected` \| `Superseded` \| `Deprecated`             |
+| **Date**               | YYYY-MM-DD (Ngày ra quyết định chính thức)                                          |
+| **Owner**              | [Người / Team chịu trách nhiệm]                                                     |
+| **Decision Scope**     | `System` \| `Domain` \| `Service` \| `Platform` \| `Org-wide`                       |
+| **Decision Type**      | `Strategic` (Dài hạn) \| `Tactical` (Trung hạn) \| `Operational` (Vận hành)        |
+| **Priority**           | `Critical` \| `High` \| `Medium` \| `Low`                                           |
+| **Related ADRs**       | ADR-001, ADR-014                                                                    |
+| **Supersedes**         | ADR-00Y                                                                             |
+| **Tags**               | #scalability, #security, #maintainability                                           |
+
+**Giải thích Status:**
+- *Proposed*: Đang đề xuất.
+- *Accepted*: Đã được chấp thuận.
+- *Rejected*: Đã phân tích nhưng không chọn.
+- *Superseded*: Bị thay thế bởi ADR mới hơn.
+- *Deprecated*: Không còn nên dùng.
+
+---
+
+### 1. Executive Summary (Tóm tắt thực hiện)
+Tóm tắt ngắn gọn trả lời 4 câu hỏi:
+- Vấn đề gì?
+- Đề xuất gì?
+- Vì sao chọn?
+- Kỳ vọng gì?
+
+---
+
+### 2. Context / Problem Statement (Bối cảnh / Bài toán)
+*Đây là phần quan trọng nhất. Nếu bối cảnh sai, quyết định kỹ thuật dù đúng vẫn có thể sai tổng thể.*
+
+#### 2.1 Current State (Hiện trạng)
+- **Quy mô user:** ...
+- **Peak traffic:** ...
+- **Team size:** ...
+- **Kiến trúc hiện tại:** ...
+
+#### 2.2 Business Need (Nhu cầu kinh doanh)
+Ví dụ: Release nhanh hơn, Compliance SOC2, Giảm burn rate...
+
+#### 2.3 Current Pain Points (Vấn đề hiện tại)
+Cần có số liệu cụ thể (VD: Deploy mất 45 phút, MTTR = 2 giờ).
+
+#### 2.4 Constraints (Ràng buộc)
+Deadline, Ngân sách, Không breaking API public...
+
+#### 2.5 If We Do Nothing (Hậu quả nếu không hành động)
+Mất khách hàng, nợ kỹ thuật tăng, rủi ro hệ thống...
+
+#### 2.6 Why Now? (Tại sao là lúc này?)
+Sắp ký khách hàng lớn, hạ tầng quá tải...
+
+---
+
+### 3. Stakeholders & Concerns (Bên liên quan & Mối quan tâm)
+
+| Stakeholder   | Vai trò            | Concern                  | Success Criteria          |
+|---------------|--------------------|--------------------------|---------------------------|
+| **Business**  | Revenue owner      | Time to market           | Release < 2 weeks         |
+| **Product**   | Delivery owner     | Predictability           | Stable roadmap            |
+| **Dev Team**  | Builder            | Maintainability          | Easy onboarding           |
+| **Ops/SRE**   | Reliability        | Stability                | 99.9% uptime              |
+
+---
+
+### 4. Decision Drivers (Tiêu chí ra quyết định)
+
+| Driver        | Priority | Meaning                     |
+|---------------|----------|-----------------------------|
+| **Simplicity**    | High     | Dễ hiểu, dễ vận hành        |
+| **Scalability**   | High     | Khả năng mở rộng tốt        |
+| **Cost**          | Medium   | Chi phí hợp lý              |
+| **Security**      | High     | Giảm thiểu rủi ro           |
+
+---
+
+### 5. Considered Options (Các phương án đã cân nhắc)
+
+#### Option A: [Tên phương án]
+- **Description:** Mô tả chi tiết phương án.
+- **Pros:** Ưu điểm.
+- **Cons:** Nhược điểm.
+- **Risks:** Rủi ro tiềm ẩn.
+- **Cost Estimate:** (Build Cost, Run Cost, Learning Cost).
+- **Reversibility:** `Easy` \| `Medium` \| `Hard`.
+
+*(Lặp lại tương tự cho các Option khác)*
+
+---
+
+### 6. Decision Matrix (Bảng so sánh quyết định)
+
+| Criteria       | Weight | Option A | Option B | Option C |
+|----------------|--------|----------|----------|----------|
+| Simplicity     | 5      | 5        | 4        | 2        |
+| Scalability    | 5      | 2        | 4        | 5        |
+| Cost           | 4      | 5        | 4        | 2        |
+| **Total Score**| -      | **12**   | **13**   | **9**    |
+
+---
+
+### 7. Decision Outcome (Kết quả quyết định)
+- **Chosen Option:** [Phương án được chọn].
+- **Why This Option Wins:** Lý do thắng cuộc (Cân bằng giữa scale và simplicity...).
+- **Why Not Others:** Lý do loại các phương án còn lại.
+- **Decision Confidence:** `High` \| `Medium` \| `Low`.
+
+---
+
+### 8. Impact Across 4+1 Views (Tác động kiến trúc)
+- **Use Case View:** Ảnh hưởng đến trải nghiệm người dùng/nghiệp vụ.
+- **Logical View:** Thay đổi về Domain/Module.
+- **Development View:** Thay đổi về Codebase/Team ownership.
+- **Process View:** Thay đổi về Runtime/Behavior.
+- **Physical View:** Thay đổi về Infra/Deployment.
+
+---
+
+### 9. Consequences (Hệ quả)
+- **Positive:** Hệ quả tích cực.
+- **Negative:** Hệ quả tiêu cực (Chi phí migration, cần đào tạo lại...).
+- **Trade-offs Accepted:** Những thứ chấp nhận hy sinh (VD: Chấp nhận tăng độ phức tạp để đổi lấy độ tin cậy).
+
+---
+
+### 10. Risks & Mitigations (Rủi ro & Giảm thiểu)
+
+| Risk              | Severity | Probability | Mitigation                          |
+|-------------------|----------|-------------|-------------------------------------|
+| Migration delay   | High     | Medium      | Rollout theo từng giai đoạn         |
+| Skill gap         | Medium   | High        | Tổ chức buổi training nội bộ        |
+
+---
+
+### 11. Rollout & Rollback Plan
+- **Phase 1:** Validation (POC, Baseline metrics).
+- **Phase 2:** Controlled Rollout (5% traffic, Monitor).
+- **Phase 3:** Full Adoption.
+- **Rollback Plan:** Các bước quay lui nếu có lỗi nghiêm trọng.
+
+---
+
+### 12. Success Metrics (Chỉ số thành công)
+
+| Metric         | Baseline   | Target      |
+|----------------|------------|-------------|
+| Deploy time    | 40 min     | 10 min      |
+| p95 latency    | 450ms      | < 300ms     |
+
+---
+
+### 13. Revisit Trigger (Điều kiện xem lại)
+*Quyết định không bất biến. Cần xem lại khi:*
+- Traffic tăng > 5x.
+- Team size tăng gấp đôi.
+- Chi phí vận hành tăng vượt mức cho phép.
+
+---
+
+### 14. Final Approval (Phê duyệt cuối)
+
+| Role         | Name   | Decision   |
+|--------------|--------|------------|
+| **Tech Lead**| ...    | Approve    |
+| **EM**       | ...    | Approve    |
+| **Product**  | ...    | Acknowledge|
+
+---
+
+## III. Hướng dẫn viết & Quy tắc vàng
+
+-  **ADR tốt là:** Ngắn gọn, rõ trade-off, có dữ liệu thực tế và gắn liền giá trị kinh doanh.
+-  **ADR tệ là:** Viết để khoe công nghệ, dài dòng, không có người chịu trách nhiệm rõ ràng.
+
+> "Không có quyết định hoàn hảo, chỉ có quyết định phù hợp nhất với context, timing và constraints hiện tại."
+
+---
+
+### Nhật ký cập nhật / Changelog (Tùy chọn)
+
+| Date       | Change                                              | By            |
+|------------|-----------------------------------------------------|---------------|
+| 2025-01-01 | Status updated from Proposed to Accepted            | Tech Lead     |
+| 2025-01-05 | Superseded by ADR-021                               | Architecture Board |
+
+---
