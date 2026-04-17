@@ -1,0 +1,222 @@
+---
+title: 2026 - Blog về Source Base
+description: Năm 2026, tôi sẽ xây dựng source base trong thời đại AI như thế nào?
+date: 2026-04-18
+type: BLogs
+
+author:
+  name: "Huỳnh Đức"
+  avatar: "/images/Duc.jpg"
+signatures:
+  name: "Mr. Đức"
+  contacts:
+    - "duch9707@gmail.com"
+    - "http://linkedin.com/in/mr-duc"
+---
+
+![2026 - hợp tác cùng AI?][image1]
+
+---
+
+## Thiết kế để con người và AI cùng phát triển nhanh, an toàn và bền vững
+
+Trong nhiều năm, khi nói về backend engineering, chúng ta thường tối ưu cho ba đối tượng:
+* **Người dùng cuối**
+* **Hệ thống production**
+* **Đội ngũ kỹ sư phát triển**
+
+Ngày nay, có thêm một đối tượng mới tham gia trực tiếp vào vòng đời phần mềm: **AI Agents**.
+
+Đây không còn là autocomplete đơn giản. AI hiện nay đã có thể tham gia vào nhiều công việc thực tế:
+* Sinh code từ yêu cầu
+* Viết test cases
+* Refactor module
+* Phân tích lỗi production
+* Đọc log và truy vết flow
+* Viết tài liệu kỹ thuật
+* Tạo migration scripts
+* Review pull requests
+* Đề xuất cải tiến kiến trúc
+
+Điều này làm thay đổi một câu hỏi cũ. Trước đây ta hỏi: *Codebase có tốt cho developer không?* Bây giờ phải hỏi thêm: **Codebase có tốt cho AI Agents cộng tác cùng developer không?**
+
+Nếu thiếu góc nhìn này, cách xây backend codebase sẽ nhanh chóng lỗi thời.
+
+---
+
+## Codebase không còn chỉ phục vụ con người
+
+Trước đây, source code chủ yếu được đọc và chỉnh sửa bởi kỹ sư. Ngày nay, source code còn được:
+* Parse bởi AI tools
+* Reason bởi coding agents
+* Refactor bởi autonomous workflows
+* Kiểm thử bởi test agents
+* Truy vấn bởi internal copilots
+
+Nghĩa là codebase hiện đại phải phục vụ hai loại actor:
+
+### 1. Human Intelligence
+**Mạnh về:**
+* Trực giác business
+* Judgment
+* Trade-off chiến lược
+* Hiểu bối cảnh mơ hồ
+
+### 2. Machine Intelligence
+**Mạnh về:**
+* Xử lý lặp lại
+* Tìm pattern
+* Generate nhanh
+* Đọc nhiều file
+* Tự động hóa quy trình
+
+> **Backend codebase tốt trong thời đại mới là codebase giúp hai loại năng lực này phối hợp hiệu quả.**
+
+---
+
+## Thesis trung tâm của tôi
+
+Trước đây, codebase tốt là codebase dễ cho người bảo trì. Ngày nay:
+* **Codebase tốt là codebase nơi con người ra quyết định tốt hơn, và AI thực thi nhanh hơn.**
+* Nếu con người phải làm mọi thứ thủ công, velocity bị giới hạn.
+* Nếu AI làm trong codebase hỗn loạn, entropy tăng nhanh.
+* Muốn scale thật sự, cần cả hai.
+
+---
+
+## Điều AI thay đổi trong cách thiết kế backend codebase
+
+### 1. Ambiguity trở nên đắt đỏ hơn bao giờ hết
+Con người có thể đoán context. AI thì thường không đoán tốt trong môi trường mơ hồ. Ví dụ codebase có:
+* Naming thiếu nhất quán
+* Business rule nằm rải rác
+* Hidden side effects
+* Module boundary mờ
+* Convention thay đổi liên tục
+
+Con người sẽ chậm. AI sẽ: **sinh code sai pattern, hiểu sai dependency, duplicate logic, phá rule ngầm.** Mơ hồ từng là chi phí. Giờ nó là **hệ số nhân của lỗi**.
+
+### 2. Consistency tạo leverage cực lớn
+Nếu codebase có convention rõ: cách đặt tên ổn định, request flow giống nhau, error handling chuẩn hóa, test structure nhất quán, module layout giống nhau... AI có thể học pattern đó và tạo giá trị rất nhanh. Một agent thấy 5 module giống nhau sẽ tạo module thứ 6 tốt hơn nhiều so với môi trường hỗn loạn.
+
+### 3. Module nhỏ và cohesive quan trọng hơn trước
+AI reasoning luôn có giới hạn context. File 4000 dòng, service class chứa 8 trách nhiệm, shared utils khổng lồ — đều làm chất lượng agent giảm mạnh. Tôi ưu tiên: **module nhỏ, boundary rõ, file có trách nhiệm cụ thể, dependency dễ lần.** Không chỉ vì con người, mà vì AI cũng cần điều đó.
+
+### 4. Tests giờ là hệ thống kiểm soát chất lượng
+Khi tốc độ generate code tăng mạnh, tốc độ tạo bug cũng có thể tăng theo. Vì vậy test không còn chỉ để “best practice”. Nó là **control system**. Tôi ưu tiên:
+* Unit tests cho domain rules
+* Integration tests cho contracts
+* Regression tests cho bug quan trọng
+* CI gates rõ ràng
+
+AI có thể viết code nhanh. Tests giúp biết code đó đáng tin hay không.
+
+---
+
+## Tôi xây backend codebase thế nào trong thời đại AI
+
+### Layer 1 — Timeless Principles (không đổi dù có AI)
+- **Hiểu domain trước tool:** AI không thể thay thế việc hiểu business đúng mức.
+- **Boundary trước framework:** Nếu boundaries sai, AI chỉ tăng tốc sai lầm.
+- **Low coupling, high clarity:** Vẫn là nguyên lý sống còn.
+- **Evolution over perfection:** Codebase cần tiến hóa được.
+
+### Layer 2 — AI-native Principles (mới quan trọng)
+- **Design for readability by machines and humans:** Code nên explicit, predictable, structured, consistent.
+- **Convention over creativity:** Ở layer codebase, sáng tạo vô tổ chức thường gây hại.
+- **Contracts everywhere:** typed DTOs, schemas, API specs, event contracts. AI làm tốt hơn khi contract rõ.
+- **Fast feedback loops:** tests nhanh, linting rõ, CI tự động.
+- **Documentation as executable context:** Docs không chỉ cho người đọc, mà còn để agent hiểu repo.
+
+---
+
+## Structure tôi ưu tiên
+
+```bash
+src/
+  modules/          # Business boundaries rõ.
+    auth/
+    billing/
+    users/
+    courses/
+  shared/           # Chỉ chứa primitive thật sự dùng chung (logger, error primitives...)
+  platform/         # Infra concerns (messaging, storage adapters, observability...)
+  docs/             # Machine-readable context (ADRs, architecture maps, runbooks...)
+```
+
+---
+
+## Clean Architecture trong thời đại AI còn quan trọng hơn
+
+Nhiều người nghĩ AI sinh code tốt thì architecture bớt quan trọng. Tôi nghĩ ngược lại. **AI làm tốc độ tăng. Architecture quyết định hướng tăng.**
+
+Nếu boundaries tốt:
+* AI generate adapters nhanh
+* Viết tests nhanh
+* Thay provider nhanh
+* Refactor an toàn hơn
+
+Clean đúng nghĩa là: **policy tách mechanism, dependency có chủ đích, business rules sống lâu hơn tool choice.** Điều này càng giá trị khi tool thay đổi liên tục.
+
+---
+
+## Anti-pattern mới trong thời đại AI
+
+- **AI-generated spaghetti:** Team generate code nhanh nhưng không governance. Kết quả: duplicate services, inconsistent naming, random abstractions, hidden bugs.
+- **Documentation zero:** AI bị thả vào repo không map, không conventions, không boundaries. Output thường tệ.
+- **Trust without verification:** Tin agent quá mức, thiếu tests và review.
+- **Over-automation too early:** Tự động hóa chaos vẫn là chaos.
+
+---
+
+## Governance model mới tôi dùng
+
+* **Human owns decisions:** Con người chịu trách nhiệm domain model, security decisions, architecture boundaries, risk trade-offs, prioritization.
+* **AI owns acceleration:** AI hỗ trợ boilerplate, test scaffolding, repetitive refactors, docs drafts, static analysis support.
+* **Human reviews outcomes:** Final accountability vẫn thuộc tổ chức.
+
+---
+
+## Nếu không dùng AI thì sao?
+
+Vẫn áp dụng được gần như toàn bộ nguyên lý trong bài này. Vì codebase tốt cho AI thường cũng là codebase tốt cho người: **rõ ràng, nhất quán, modular, testable, observable.**
+
+Khác biệt là: **AI làm phần thưởng của codebase tốt lớn hơn rất nhiều. Và hình phạt của codebase xấu cũng lớn hơn rất nhiều.**
+
+---
+
+## Nếu hôm nay tôi bắt đầu backend mới
+
+Tôi sẽ làm theo thứ tự:
+- Map domain boundaries
+- Chọn architecture đơn giản nhất đủ dùng
+- Chuẩn hóa conventions từ ngày đầu
+- Setup tests + CI + observability
+- Viết docs cho người và agent cùng hiểu
+- Dùng AI tăng tốc phần lặp lại
+- Review architecture định kỳ
+- Evolve theo pain thật
+
+### Dấu hiệu codebase sẵn sàng cho AI Agents:
+* Naming nhất quán
+* Module ownership rõ
+* Contracts rõ
+* Tests đáng tin
+* Docs cập nhật
+* Dependency đơn giản
+* Build pipeline sạch
+
+---
+
+## Kết luận
+
+Chúng ta đang bước vào giai đoạn mà năng suất engineering không còn chỉ phụ thuộc số developer. Nó phụ thuộc vào việc: **Tổ chức có xây được môi trường nơi con người và AI cùng khuếch đại năng lực của nhau hay không.** Backend codebase là trung tâm của môi trường đó.
+
+Vì vậy, khi xây hệ thống hôm nay, tôi không chỉ hỏi: *có scale không?, có clean không?, có ship nhanh không?* Tôi hỏi thêm: **Codebase này có giúp con người suy nghĩ tốt hơn, và giúp AI hành động an toàn hơn không?**
+
+Nếu có, đó là nền móng mạnh cho nhiều năm tới.
+
+> **Một câu tôi tin:** Trước đây, code tốt là code dễ bảo trì. Ngày nay, code tốt là code giúp trí tuệ con người và trí tuệ máy cùng tạo giá trị.
+
+---
+[image1]: /images/posts/blog-source-base/image_01.png

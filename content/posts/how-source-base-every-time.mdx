@@ -1,0 +1,134 @@
+---
+title: Trước 2026, Tôi nghĩ gì về Source Base?
+description: Source Base trong trường hợp không có AI thì như thế nào?
+date: 2026-04-18
+type: BLogs
+
+author:
+  name: "Huỳnh Đức"
+  avatar: "/images/Duc.jpg"
+signatures:
+  name: "Mr. Đức"
+  contacts:
+    - "duch9707@gmail.com"
+    - "http://linkedin.com/in/mr-duc"
+---
+
+![Đúng nhận sai cãi!!][image2]
+
+---
+
+## Thiết kế để chịu thay đổi, không chỉ để chạy được
+
+Trong nhiều cuộc thảo luận về backend engineering, trọng tâm thường rơi vào những chủ đề hấp dẫn: hệ thống chịu được bao nhiêu request, dùng microservices hay monolith, framework nào tốt hơn, database nào nhanh hơn...
+
+Đó đều là những câu hỏi hợp lý. Nhưng trong thực tế, rất nhiều hệ thống gặp khó khăn không phải vì công nghệ, mà vì:
+* Thay đổi nhỏ mất quá nhiều thời gian.
+* Sửa bug này lại kéo theo lỗi mới kia.
+* Người mới mất hàng tuần để hiểu luồng xử lý.
+* Tri thức nằm cục bộ ở một vài cá nhân.
+
+Vấn đề xuất hiện khi **codebase không còn hỗ trợ tổ chức vận hành hiệu quả**. Vì vậy, mục tiêu của tôi khi xây dựng backend không chỉ là "chạy được", mà là: *Sáu tháng, một năm, hoặc ba năm nữa, codebase này còn giúp team thay đổi nhanh và an toàn hay không?*
+
+---
+
+## 1. Codebase Là Tài Sản Vận Hành
+
+Tôi nhìn codebase như một hệ thống vận hành của tổ chức. Một kiến trúc tệ có thể chưa làm hệ thống sập hôm nay, nhưng nó tạo ra chi phí lặp lại mỗi tuần trong nhiều năm. Thiết kế codebase là bài toán **Kinh tế + Kỹ thuật + Tổ chức**.
+
+### Tôi bắt đầu từ Context, không bắt đầu từ Pattern
+Trước khi chọn kiến trúc, tôi luôn trả lời 4 câu hỏi:
+- **Domain:** CRUD đơn giản hay nhiều business rules phức tạp?
+- **Team:** Trình độ thế nào? Turnover cao hay thấp?
+- **Product:** Đang tìm Product-Market Fit hay đã tăng trưởng ổn định?
+- **Ràng buộc:** SLA cao không? Có cần Audit/Compliance không?
+
+> **Kiến trúc tốt luôn có context. Kiến trúc không có context thường chỉ là niềm tin cá nhân.**
+
+---
+
+## 2. 7 Mục Tiêu Thật Sự Của Một Backend Codebase
+
+| Thuộc tính | Mô tả |
+| :--- | :--- |
+| **Dễ hiểu** | Người mới hiểu được luồng chính trong thời gian ngắn. |
+| **Dễ thay đổi** | Thêm feature không gây hiệu ứng domino. |
+| **Đáng tin cậy** | Deploy với mức tự tin cao, lỗi được cô lập tốt. |
+| **Quan sát được** | Biết hệ thống đang làm gì khi có sự cố (Observability). |
+| **Có đường tiến hóa** | Có thể refactor hoặc tách module dần khi cần. |
+| **Chi phí hợp lý** | Không tốn complexity vượt quá nhu cầu thật. |
+| **Phù hợp tổ chức** | Team hiện tại có đủ năng lực vận hành và phát triển. |
+
+---
+
+## 3. Những Nguyên Lý Thiết Kế Cốt Lõi
+
+### 3.1. Tối ưu cho thay đổi trước, tối ưu cho scale sau
+Thay đổi business là điều chắc chắn, còn scale traffic là "vấn đề đáng mừng" nếu có. Tôi ưu tiên sửa nhanh, release an toàn hơn là tối ưu sớm cho quy mô chưa tồn tại.
+
+### 3.2. Chia theo Domain trước khi chia theo Layer
+Thay vì cấu trúc kỹ thuật (`controllers/`, `services/`, `models/`), tôi ưu tiên chia theo nghiệp vụ:
+```bash
+src/modules/
+  ├── auth/
+  ├── billing/
+  ├── users/
+  └── notifications/
+```
+Cách làm này giúp dễ tìm logic, xác định ownership rõ ràng và thay đổi có phạm vi (scope).
+
+### 3.3. Giảm Coupling là giảm chi phí tương lai
+Boundary rõ, contract rõ, dependency rõ. Không phải để "đẹp kiến trúc", mà để giảm sự chồng chéo khi release và tránh bug lan truyền.
+
+---
+
+## 4. Kiến Trúc Mặc Định: Modular Monolith
+
+Với đa số sản phẩm, tôi ưu tiên **Modular Monolith** vì:
+* Đơn giản hơn microservices, hạ tầng thấp.
+* Local development và debug nhanh.
+* Transaction dễ quản lý, ít moving parts.
+
+**Lưu ý:** Monolith không phải vấn đề, **Unstructured Monolith** mới là vấn đề. Nếu mọi module gọi chéo tự do và dùng chung schema vô tội vạ, đó là một "Big Ball of Mud".
+
+### Tổ chức bên trong một module:
+Tôi thường phân tách trách nhiệm (không nhất thiết là template bắt buộc):
+* **Domain:** Business rules cốt lõi (policy, constraints).
+* **Application:** Điều phối use case (create, renew, cancel).
+* **Infrastructure:** Chi tiết kỹ thuật (database, queue, providers).
+* **Presentation:** Boundary của API (HTTP/gRPC).
+
+---
+
+## 5. Khi Nào Cần Clean Architecture, DDD và Microservices?
+
+* **Clean Architecture:** Hữu ích khi business rules phức tạp và vòng đời hệ thống dài. Đừng dùng nếu chỉ là CRUD đơn giản.
+* **DDD (Domain-Driven Design):** Giá trị nhất ở *Ubiquitous Language* và *Bounded Context*. Nó giúp model phản ánh business thật thay vì chỉ là database table.
+* **Microservices:** Chỉ cân nhắc khi team đủ lớn, nhu cầu scale giữa các domain khác nhau rõ rệt và năng lực DevOps/Observability đủ mạnh.
+
+---
+
+## 6. Operability & Human Factors
+
+Một backend tốt phải được thiết kế để vận hành (Operability) ngay từ đầu:
+* Structured logging, Metrics, Tracing.
+* Health checks, Timeout/Retry policy, Rate limiting.
+* Rollback path rõ ràng.
+
+Đặc biệt, **Codebase là môi trường làm việc của con người**. Một kiến trúc tốt tạo ra sự tự tin và cộng tác dễ dàng; một kiến trúc xấu tạo ra sự sợ hãi và Burnout.
+
+---
+
+## Kết luận
+
+Backend codebase không nên được thiết kế như một bài tập kỹ thuật thuần túy. Nó là điểm giao thoa của **Business, Con người, Dữ liệu và Vận hành**.
+
+Nếu hôm nay bạn bắt đầu một backend mới, hãy nhớ:
+- Hiểu context trước khi chọn pattern.
+- Tối ưu cho sự thay đổi trước khi lo về complexity.
+- Boundary rõ ràng là chìa khóa để tiến hóa.
+
+> **Code chạy được là điểm bắt đầu. Code giúp tổ chức tiến lên bền vững mới là giá trị thật của engineering.**
+
+---
+[image2]: /images/posts/blog-source-base/image_02.png
