@@ -1,0 +1,395 @@
+---
+title: RFC Template
+description: Đề xuất thay đổi quan trọng và thu thập phản hồi thế nào?
+date: 2026-04-17
+type: Technical Document
+externalUrl: /images/posts/rfc-request-for-comments/rfc.pdf
+author:
+  name: "Huỳnh Đức"
+  avatar: "/images/Duc.jpg"
+signatures:
+  name: "Mr. Đức"
+  contacts:
+    - "duch9707@gmail.com"
+    - "http://linkedin.com/in/mr-duc"
+---
+
+# Request for Comments (RFC)
+
+Request for Comments (RFC) là tài liệu dùng để đề xuất thay đổi quan trọng, thu thập phản hồi từ các bên liên quan trước khi triển khai.
+
+Nếu ADR trả lời “Chúng ta quyết định gì?” 
+thì RFC trả lời “Chúng ta đề xuất gì, tại sao, triển khai thế nào, ai phản biện?”
+
+### Mục tiêu của RFC
+
+- Tạo diễn đàn phản biện chất lượng cao
+- Giảm quyết định cảm tính
+- Thu thập góc nhìn đa chiều trước khi build
+- Làm rõ scope / impact / risks
+- Tăng alignment giữa Product / Engineering / Security / Ops
+- Giảm rework sau khi bắt đầu triển khai
+- Tạo dấu vết reasoning cho tương lai
+
+---
+
+## I. Cách sử dụng RFC
+
+### 1. Khi nào nên viết RFC?
+
+Viết RFC khi thay đổi có ảnh hưởng đáng kể:
+
+- Đổi kiến trúc hệ thống
+- Introduce công nghệ mới
+- Refactor quy mô lớn
+- Thay đổi API contract quan trọng
+- Thay đổi security model
+- Đổi deployment strategy
+- Migration database
+- Thay đổi ảnh hưởng nhiều team
+- Cần consensus trước khi thực thi
+
+### 2. Khi nào không cần RFC?
+
+Không cần RFC cho thay đổi nhỏ:
+
+- Sửa bug nhỏ
+- Đổi UI nhỏ
+- Rename biến / field
+- Optimize local code path nhỏ
+- Thay đổi nội bộ không ảnh hưởng ai khác
+
+> **Quy tắc vàng:** Thay đổi càng rộng, càng đắt nếu sai, càng nên có RFC.
+
+---
+
+## II. Chi tiết Biểu mẫu RFC
+
+### RFC-00X: [Tên đề xuất rõ ràng, dùng động từ]
+
+**Ví dụ tên tốt:**
+
+- *Introduce Modular Monolith Architecture*
+- *Migrate Authentication to OAuth2/OIDC*
+- *Adopt Kafka for Event Streaming*
+- *Standardize Internal API Error Format*
+- *Introduce Feature Flag Platform*
+
+**Tên yếu:**
+
+- *Some Improvements*
+- *Backend Changes*
+- *New System*
+
+---
+
+### Metadata
+
+| Field | Value / Description |
+| :--- | :--- |
+| **Status** | `Draft` \| `Review` \| `Accepted` \| `Rejected` \| `Withdrawn` \| `Implemented` |
+| **Author** | [Tên / Team] |
+| **Date** | `YYYY-MM-DD` |
+| **Priority** | `Critical` \| `High` \| `Medium` \| `Low` |
+| **Target Release** | `Q3 2026 / Sprint 18` |
+| **Related ADRs** | `ADR-002`, `ADR-014` |
+| **Related RFCs** | `RFC-003` |
+| **Review Deadline** | `YYYY-MM-DD` |
+| **Stakeholders** | `Product, Backend, Security, DevOps` |
+
+**Giải thích Status:**
+
+- `Draft` = đang soạn
+- `Review` = đang lấy ý kiến
+- `Accepted` = được chấp thuận
+- `Rejected` = không thông qua
+- `Withdrawn` = tác giả rút lại
+- `Implemented` = đã triển khai xong
+
+---
+
+### 1. Executive Summary (Tóm tắt điều hành)
+
+Trả lời 5 câu:
+
+- Vấn đề gì?
+- Đề xuất gì?
+- Lợi ích gì?
+- Chi phí / risk gì?
+- Cần ai approve?
+
+**Ví dụ:**
+Hệ thống hiện deploy chậm, khó scale theo traffic tăng trưởng.  
+Đề xuất chuyển sang containerized deployment trên Kubernetes.  
+Lợi ích: giảm downtime, tăng tốc release, chuẩn hóa infra.  
+Chi phí: tăng complexity vận hành.  
+Cần approval từ Platform + Product + Finance.
+
+---
+
+### 2. Problem Statement (Bài toán cần giải)
+
+**Hiện trạng**
+
+- Deploy time: 40 phút
+- Incident/month: 6
+- Không autoscaling
+- Release cần downtime
+
+**Tác động business**
+
+- Chậm ra feature
+- Giảm reliability
+- Khó bán enterprise plan
+
+**Nếu không làm gì**
+
+- Velocity tiếp tục giảm
+- Debt tăng
+- Infra bottleneck
+
+---
+
+### 3. Goals / Non-Goals
+
+**Goals (Mục tiêu)**
+
+- Deploy `< 10` phút
+- Zero-downtime deployment
+- Horizontal scaling
+- Giảm incident release-related
+
+**Non-Goals (Không nằm trong phạm vi)**
+
+- Rewrite toàn bộ codebase
+- Đổi cloud provider
+- Rebuild frontend
+
+---
+
+### 4. Context & Constraints
+
+**Constraints**
+
+- Team DevOps chỉ 2 người
+- Deadline 8 tuần
+- Budget tăng tối đa 20%
+- Không downtime `> 5` phút
+
+**Assumptions**
+
+- Traffic tăng 3x trong 12 tháng
+- Team backend giữ 8 người
+- Kubernetes skill có thể train nội bộ
+
+---
+
+### 5. Stakeholders & Concerns
+
+| Stakeholder | Concern | Success Criteria |
+| :--- | :--- | :--- |
+| Product | release speed | weekly releases |
+| Business | uptime | SLA 99.9% |
+| Engineering | maintainability | easier delivery |
+| Security | compliance | pass audit |
+| Finance | cost | within budget |
+
+---
+
+### 6. Proposal (Đề xuất chính)
+
+**Giải pháp đề xuất** Triển khai ứng dụng dưới dạng containers trên Kubernetes cluster managed service.
+
+**Thành phần chính**
+
+- Dockerized services
+- CI/CD pipeline
+- Rolling deployment
+- Horizontal Pod Autoscaler
+- Centralized logging
+- Monitoring & alerting
+
+---
+
+### 7. Alternatives Considered
+
+#### Option A: Keep current VM deployment
+
+- **Pros:** Không migration cost
+- **Cons:** Không solve scale problem
+
+#### Option B: Kubernetes Managed Service (Recommended)
+
+- **Pros:** autoscaling, deployment mature, ecosystem mạnh
+- **Cons:** learning curve, ops complexity
+
+#### Option C: Serverless Containers
+
+- **Pros:** ít ops burden
+- **Cons:** lock-in, runtime limits
+
+---
+
+### 8. Decision Matrix
+
+| Criteria | Weight | A | B | C |
+| :--- | :--- | :--- | :--- | :--- |
+| Scalability | 5 | 1 | 5 | 4 |
+| Simplicity | 4 | 5 | 3 | 4 |
+| Cost | 4 | 5 | 3 | 3 |
+| Reliability | 5 | 2 | 5 | 4 |
+| **Total** | - | 13 | 16 | 15 |
+
+*Dùng để minh bạch reasoning, không thay thế judgment.*
+
+---
+
+### 9. Detailed Design
+
+**Architecture Changes**
+
+- App chạy dưới Deployment
+- DB giữ nguyên managed PostgreSQL
+- Redis cho session/cache
+- Ingress controller expose traffic
+
+**Data Flow** User → Load Balancer → Ingress → App Pods → DB / Cache
+
+**Security**
+
+- Secret Manager
+- RBAC
+- TLS everywhere
+- Network policy
+
+---
+
+### 10. Rollout Plan
+
+- **Phase 1: Proof of Concept** — deploy staging cluster, benchmark
+- **Phase 2: Shadow Traffic** — route internal traffic thử nghiệm
+- **Phase 3: Limited Production** — 10% traffic
+- **Phase 4: Full Cutover** — 100% production traffic
+
+---
+
+### 11. Rollback Plan
+
+Nếu fail:
+
+- Route traffic về VM cũ
+- Restore previous image
+- Disable autoscaling
+- Freeze deployment
+
+---
+
+### 12. Risks & Mitigations
+
+| Risk | Severity | Probability | Mitigation |
+| :--- | :--- | :--- | :--- |
+| Skill gap | Medium | High | training |
+| Cost increase | Medium | Medium | budget alert |
+| Misconfig outage | High | Medium | staged rollout |
+| Security missetup | High | Low | review checklist |
+
+---
+
+### 13. Operational Impact
+
+**Team Impact**
+
+- Cần train Kubernetes
+- Dev ownership cao hơn
+
+**Process Impact**
+
+- CI/CD thay đổi
+- On-call cần update runbook
+
+**Infra Impact**
+
+- Cluster cost tăng
+- Monitoring mature hơn
+
+---
+
+### 14. Metrics of Success
+
+| Metric | Baseline | Target |
+| :--- | :--- | :--- |
+| Deploy time | 40 min | `< 10 min` |
+| Downtime/release | 10 min | 0 |
+| Incident/month | 6 | `< 2` |
+| Infra utilization | low efficiency | optimized |
+
+---
+
+### 15. Open Questions
+
+- Managed cluster vendor nào tối ưu?
+- Có cần service mesh ngay phase 1?
+- Cost threshold bao nhiêu thì revisit?
+
+---
+
+### 16. Review Requests
+
+Xin phản hồi từ:
+
+- Backend Lead
+- Platform Team
+- Security Team
+- Product Manager
+- Finance
+
+**Deadline comment:** `YYYY-MM-DD`
+
+---
+
+### 17. Approval
+
+| Role | Name | Decision |
+| :--- | :--- | :--- |
+| Tech Lead | ... | Approve |
+| Platform Lead | ... | Approve |
+| Product | ... | Acknowledge |
+| Security | ... | Approve |
+
+---
+
+### 18. Relationship with ADR
+
+RFC dùng để thảo luận đề xuất trước khi quyết định.  
+Sau khi accepted, tạo ADR để ghi nhận quyết định cuối cùng.
+
+**Ví dụ:**
+
+- RFC-008: Introduce Kubernetes Deployment Model
+- ADR-021: Adopt Kubernetes as Production Runtime Platform
+
+---
+
+### 19. Writing Guidance
+
+**RFC tốt là:**
+
+- Rõ vấn đề
+- Có options
+- Có risk
+- Mời phản biện thật
+- Có rollout plan
+- Có metric thành công
+
+**RFC tệ là:**
+
+- Viết xong rồi mới xin ý kiến
+- Chỉ có 1 option
+- Thiếu cost
+- Không owner
+- Không timeline
+
+> **Golden Rule:** RFC không phải để chứng minh mình đúng.  
+> RFC là để tìm ra quyết định đúng hơn thông qua phản biện chất lượng cao.
+
+---
