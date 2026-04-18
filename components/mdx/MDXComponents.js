@@ -34,6 +34,68 @@ export function MDXComponents() {
   const tdColor = useColorModeValue('gray.700', 'gray.300');
 
   return {
+    pre: (props) => (
+      <Box
+        as="pre"
+        position="relative"
+        bg="#0B0F14"
+        color="#E6EDF3"
+        p={0}
+        rounded="xl"
+        overflow="hidden"
+        my={10}
+        fontSize="0.9em"
+        lineHeight="1.7"
+        border="1px solid rgba(255,255,255,0.08)"
+        boxShadow="0 10px 30px rgba(0,0,0,0.4)"
+      >
+        {/* header */}
+        <Box
+          px={4}
+          py={2}
+          bg="rgba(255,255,255,0.03)"
+          borderBottom="1px solid rgba(255,255,255,0.06)"
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          fontSize="0.75em"
+          color="gray.400"
+        >
+          <Box display="flex" gap={2}>
+            <Box w="8px" h="8px" bg="#FF5F56" rounded="full" />
+            <Box w="8px" h="8px" bg="#FFBD2E" rounded="full" />
+            <Box w="8px" h="8px" bg="#27C93F" rounded="full" />
+          </Box>
+          <Box opacity={0.6}>code</Box>
+        </Box>
+    
+        {/* content */}
+        <Box
+          px={5}
+          py={4}
+          overflowX="auto"
+          fontFamily="mono"
+        >
+          {props.children}
+        </Box>
+      </Box>
+    ),
+    
+    code: (props) => (
+      <Box
+        as="code"
+        px="6px"
+        py="3px"
+        rounded="6px"
+        bg="rgba(110, 118, 129, 0)"
+        color="#79C0FF"
+        fontSize="0.8em"
+        fontWeight="500"
+        border="1px solid rgba(255,255,255,0.08)"
+        backdropFilter="blur(6px)"
+        {...props}
+      />
+    ),
     h1: (props) => (
       <Heading
         as="h1"
