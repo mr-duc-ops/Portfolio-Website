@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import ThemeToggleButton from './theme-toggle-button'
-import { IoLogoGithub } from 'react-icons/io5'
+import { IoLogoFacebook, IoLogoGithub } from 'react-icons/io5'
 import { IoLogoLinkedin } from 'react-icons/io5'
 
 const LinkItem = ({ href, path, target, children, ...props }) => {
@@ -108,6 +108,19 @@ const Navbar = props => {
             <IoLogoLinkedin />
             Linkedin
           </LinkItem>
+
+          <LinkItem
+            target="_blank"
+            href="https://facebook.com/devhimdeeptry"
+            path={path}
+            display="inline-flex"
+            alignItems="center"
+            style={{ gap: 4 }}
+            pl={2}
+          >
+            <IoLogoFacebook />
+            Facebook
+          </LinkItem>
         </Stack>
 
         <Box flex={1} align="right">
@@ -142,6 +155,12 @@ const Navbar = props => {
                   href="http://linkedin.com/in/mr-duc"
                 >
                   View Linkedin
+                </MenuItem>
+                <MenuItem
+                  as={Link}
+                  href="https://facebook.com/devhimdeeptry"
+                >
+                  View Facebook
                 </MenuItem>
               </MenuList>
             </Menu>
